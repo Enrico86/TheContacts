@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿using Acr.UserDialogs;
+using Bogus;
 using FreshMvvm;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using TheContacts.Models;
+using TheContacts.Services;
 using Xamarin.Forms.Internals;
 
 namespace TheContacts.ViewModels
@@ -24,28 +26,23 @@ namespace TheContacts.ViewModels
                 CoreMethods.PushPageModel<ContactDetailsViewModel>(value);
             }
         }
-        public MainViewModel()
+
+        IContactsService _service;
+        IUserDialogs _dialogsService;
+        public MainViewModel(IContactsService service, IUserDialogs dialogs)
         {
+            _service = service;
+            _dialogsService = dialogs;
         }
 
         public override async void Init(object initData)
         {
-            Contacts = await GetData();
+            _dialogsService.ShowLoading("Cargando");
+            var temp = await _service.GetData();
+            Contacts = temp;
+            _dialogsService.HideLoading();
         }
 
-        public async Task<ObservableCollection<Contact>> GetData()
-        {
-            await Task.Delay(5000);
-            var contacts = new Faker<Contact>()
-                    .RuleFor(x => x.Name, f => f.Name.FullName())
-                    .RuleFor(x => x.Phone, f => f.Phone.PhoneNumber())
-                    .Generate(25);
-            foreach (var contact in contacts)
-            {
-                contact.Photo = "Profile.gif";
-            }
-            //Contacts = new ObservableCollection<Contact>(contacts);
-            return new ObservableCollection<Contact>(contacts);
-        }
+
     }
 }
