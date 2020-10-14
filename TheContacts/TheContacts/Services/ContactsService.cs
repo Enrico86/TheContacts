@@ -10,8 +10,11 @@ namespace TheContacts.Services
 {
     public class ContactsService: IContactsService
     {
+        public bool IsBusy;
+
         public async Task<ObservableCollection<Contact>> GetData()
         {
+            IsBusy = true;
             await Task.Delay(5000);
             var contacts = new Faker<Contact>()
                     .RuleFor(x => x.Name, f => f.Name.FullName())
@@ -22,6 +25,7 @@ namespace TheContacts.Services
                 contact.Photo = "Profile.gif";
             }
             //Contacts = new ObservableCollection<Contact>(contacts);
+            IsBusy = false;
             return new ObservableCollection<Contact>(contacts);
         }
     }

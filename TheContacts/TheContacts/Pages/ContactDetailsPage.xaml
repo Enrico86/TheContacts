@@ -33,6 +33,8 @@
                        FontAttributes="Bold"
                        FontSize="Large"></Label> 
             </Grid>
+            <Button Text="Return Data"
+                    Command="{Binding ReturnCommand}"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

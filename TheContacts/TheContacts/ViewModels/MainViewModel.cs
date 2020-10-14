@@ -22,8 +22,24 @@ namespace TheContacts.ViewModels
             get => selectedContact; 
             set
             {
-                selectedContact = value;
-                CoreMethods.PushPageModel<ContactDetailsViewModel>(value);
+                //selectedContact = value;
+                //CoreMethods.PushPageModel<ContactDetailsViewModel>(value);
+
+                //Navegación en formato modal
+                //var contactDetails = FreshPageModelResolver.ResolvePageModel<ContactDetailsViewModel>(value);
+                //var basicNavContainer = new FreshNavigationContainer(contactDetails, "contactsNavPage");
+                //CoreMethods.PushNewNavigationServiceModal(basicNavContainer, contactDetails.GetModel());
+
+                //var tabbed = new FreshTabbedNavigationContainer("secondNavPage");
+                //tabbed.AddTab<ContactDetailsViewModel>("Details", null, value);
+                //tabbed.AddTab<AboutViewModel>("About", null);
+                //CoreMethods.PushNewNavigationServiceModal(tabbed);
+
+                var masterDetail = new FreshMasterDetailNavigationContainer("secondNavPage");
+                masterDetail.AddPage<ContactDetailsViewModel>("Details", value);
+                masterDetail.AddPage<AboutViewModel>("About");
+                masterDetail.Init("Menu");
+                CoreMethods.PushNewNavigationServiceModal(masterDetail);
             }
         }
 
@@ -41,6 +57,20 @@ namespace TheContacts.ViewModels
             var temp = await _service.GetData();
             Contacts = temp;
             _dialogsService.HideLoading();
+        }
+
+        public override void ReverseInit(object returnedData)
+        {
+            base.ReverseInit(returnedData);
+        }
+
+        protected override void ViewIsAppearing(object sender, EventArgs e)
+        {
+            base.ViewIsAppearing(sender, e);          
+        }
+        protected override void ViewIsDisappearing(object sender, EventArgs e)
+        {
+            base.ViewIsDisappearing(sender, e);
         }
 
 
